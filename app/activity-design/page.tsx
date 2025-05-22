@@ -9,55 +9,39 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Loader2, Search, Wand2 } from "lucide-react"
+import { toast } from "sonner"
+import { ActivityFormData, ActivityResponse } from "@/lib/types/activity"
+import { generateActivity } from "@/lib/api/activity"
 
 export default function ActivityDesignPage() {
   const [isGenerating, setIsGenerating] = useState(false)
-  const [generatedActivity, setGeneratedActivity] = useState<null | {
-    name: string
-    description: string
-    objectives: string[]
-    materials: string[]
-    procedure: string[]
-    adaptations: string[]
-  }>(null)
+  const [formData, setFormData] = useState<ActivityFormData>({
+    goal: "",
+    participants: "",
+    duration: "",
+    preferences: ""
+  })
+  const [generatedActivity, setGeneratedActivity] = useState<ActivityResponse | null>(null)
 
-  const handleGenerate = () => {
-    setIsGenerating(true)
-    // 模擬 AI 生成過程
-    setTimeout(() => {
-      setGeneratedActivity({
-        name: "懷舊音樂與故事分享",
-        description: "透過播放長輩年輕時期的流行音樂，引導長輩分享與音樂相關的生命故事和回憶，促進社交互動和認知刺激。",
-        objectives: [
-          "促進長輩之間的社交互動和溝通",
-          "刺激長期記憶和回憶能力",
-          "提升情緒健康和生活滿意度",
-          "創造表達自我的機會",
-        ],
-        materials: [
-          "播放設備（音響或平板電腦）",
-          "1950-1970年代的音樂播放清單",
-          "相關時代的照片或物品",
-          "舒適的座位安排",
-          "簡單的節奏樂器（可選）",
-        ],
-        procedure: [
-          "活動前準備：根據長輩的年齡和背景，選擇適合的音樂曲目。",
-          "開場（10分鐘）：介紹活動目的和流程，進行簡單的暖身活動。",
-          "音樂欣賞（15分鐘）：播放2-3首精選歌曲，每首播放後暫停討論。",
-          "故事分享（30分鐘）：邀請長輩分享與音樂相關的記憶和故事。",
-          "互動討論（15分鐘）：引導長輩討論當時的社會背景、流行文化等。",
-          "結束活動（10分鐘）：總結分享內容，感謝參與，預告下次活動。",
-        ],
-        adaptations: [
-          "聽力障礙：提供歌詞列印版，使用更大音量或耳機",
-          "認知障礙：簡化問題，使用更多視覺提示",
-          "行動不便：確保座位舒適，活動中加入簡單的坐姿肢體動作",
-          "情緒低落：選擇更輕快正面的音樂，增加個別關注",
-        ],
-      })
+  const handleInputChange = (field: keyof ActivityFormData, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }))
+  }
+
+  const handleGenerate = async () => {
+    try {
+      setIsGenerating(true)
+      const result = await generateActivity(formData)
+      setGeneratedActivity(result)
+      toast.success("活動設計生成成功！")
+    } catch (error) {
+      console.error("生成活動時發生錯誤:", error)
+      toast.error(error instanceof Error ? error.message : "活動生成失敗，請稍後再試")
+    } finally {
       setIsGenerating(false)
-    }, 3000)
+    }
   }
 
   return (
@@ -85,7 +69,10 @@ export default function ActivityDesignPage() {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="activity-goal">活動目標</Label>
-                <Select>
+                <Select
+                  value={formData.goal}
+                  onValueChange={(value) => handleInputChange("goal", value)}
+                >
                   <SelectTrigger id="activity-goal">
                     <SelectValue placeholder="選擇主要活動目標" />
                   </SelectTrigger>
@@ -101,7 +88,10 @@ export default function ActivityDesignPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="participants">參與對象</Label>
-                <Select>
+                <Select
+                  value={formData.participants}
+                  onValueChange={(value) => handleInputChange("participants", value)}
+                >
                   <SelectTrigger id="participants">
                     <SelectValue placeholder="選擇參與長輩類型" />
                   </SelectTrigger>
@@ -117,7 +107,10 @@ export default function ActivityDesignPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="duration">活動時長</Label>
-                <Select>
+                <Select
+                  value={formData.duration}
+                  onValueChange={(value) => handleInputChange("duration", value)}
+                >
                   <SelectTrigger id="duration">
                     <SelectValue placeholder="選擇活動時長" />
                   </SelectTrigger>
@@ -133,10 +126,20 @@ export default function ActivityDesignPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="preferences">特殊需求或偏好</Label>
-                <Textarea id="preferences" placeholder="請描述任何特殊需求、偏好或限制條件" rows={3} />
+                <Textarea
+                  id="preferences"
+                  placeholder="請描述任何特殊需求、偏好或限制條件"
+                  rows={3}
+                  value={formData.preferences}
+                  onChange={(e) => handleInputChange("preferences", e.target.value)}
+                />
               </div>
 
-              <Button className="w-full" onClick={handleGenerate} disabled={isGenerating}>
+              <Button
+                className="w-full"
+                onClick={handleGenerate}
+                disabled={isGenerating || !formData.goal || !formData.participants || !formData.duration}
+              >
                 {isGenerating ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -201,7 +204,7 @@ export default function ActivityDesignPage() {
                 </div>
               </CardContent>
               <CardFooter className="flex justify-between">
-                <Button variant="outline">重新生成</Button>
+                <Button variant="outline" onClick={() => setGeneratedActivity(null)}>重新生成</Button>
                 <Button>使用此設計</Button>
               </CardFooter>
             </Card>
