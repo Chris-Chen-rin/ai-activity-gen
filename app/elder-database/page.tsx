@@ -137,12 +137,21 @@ export default function ElderDatabasePage() {
               <TabsTrigger value="table">表格檢視</TabsTrigger>
             </TabsList>
             <TabsContent value="table">
-              <div className="rounded-md border">
+              <div className="rounded-md border overflow-x-auto" style={{ maxHeight: 'calc(100vh - 300px)' }}>
                 <Table>
                   <TableHeader>
                     <TableRow>
                       {headers.map((header, index) => (
-                        <TableHead key={index}>{header}</TableHead>
+                        <TableHead 
+                          key={index} 
+                          className={`${
+                            index < 8 ? 'w-[70px] max-w-[70px]' : 
+                            index === 8 ? 'w-[140px] max-w-[140px]' : 
+                            'w-[90px] max-w-[90px]'
+                          } truncate sticky top-0 bg-white`}
+                        >
+                          {header}
+                        </TableHead>
                       ))}
                     </TableRow>
                   </TableHeader>
@@ -150,7 +159,16 @@ export default function ElderDatabasePage() {
                     {filteredElders.map((row, index) => (
                       <TableRow key={index}>
                         {row.map((cell, cellIndex) => (
-                          <TableCell key={cellIndex}>{cell}</TableCell>
+                          <TableCell 
+                            key={cellIndex} 
+                            className={`${
+                              cellIndex < 8 ? 'w-[70px] max-w-[70px]' : 
+                              cellIndex === 8 ? 'w-[140px] max-w-[140px]' : 
+                              'w-[90px] max-w-[90px]'
+                            } truncate`}
+                          >
+                            {cell}
+                          </TableCell>
                         ))}
                       </TableRow>
                     ))}

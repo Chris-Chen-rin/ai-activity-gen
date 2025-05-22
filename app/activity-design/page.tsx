@@ -148,7 +148,7 @@ export default function ActivityDesignPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">設計活動</h1>
         <div className="flex space-x-2">
-          <Button variant="outline">儲存活動</Button>
+          {/* <Button variant="outline">儲存活動</Button> */}
         </div>
       </div>
 
@@ -375,8 +375,44 @@ export default function ActivityDesignPage() {
                 </div>
               </CardContent>
               <CardFooter className="flex justify-between">
-                <Button variant="outline" onClick={() => setGeneratedActivity(null)}>重新生成</Button>
-                <Button>使用此設計</Button>
+                <div className="flex space-x-2">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => {
+                      setGeneratedActivity(null)
+                      // 重置表單到預設狀態
+                      setFormData({
+                        goal: "",
+                        participants: [],
+                        duration: "",
+                        preferences: ""
+                      })
+                      // 滾動回表單頂部
+                      const formTop = document.querySelector('.space-y-6')
+                      if (formTop) {
+                        formTop.scrollIntoView({ behavior: 'smooth' })
+                      }
+                    }}
+                  >
+                    清空
+                  </Button>
+                  <Button 
+                    variant="outline"
+                    onClick={() => {
+                      handleGenerate()
+                    }}
+                    disabled={isGenerating}
+                  >
+                    {isGenerating ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        生成中...
+                      </>
+                    ) : (
+                      "重新設計"
+                    )}
+                  </Button>
+                </div>
               </CardFooter>
             </Card>
           )}
@@ -453,8 +489,8 @@ export default function ActivityDesignPage() {
               </div>
             </CardContent>
             <CardFooter className="flex justify-between">
-              <Button variant="outline">儲存草稿</Button>
-              <Button>儲存活動</Button>
+              {/* <Button variant="outline">儲存草稿</Button> */}
+              {/* <Button>儲存活動</Button> */}
             </CardFooter>
           </Card>
         </TabsContent>
