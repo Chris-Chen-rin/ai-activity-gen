@@ -1,166 +1,166 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
-import { Plus, Search, Upload } from "lucide-react"
+// @ts-ignore
+import { Plus, Search, Filter } from 'lucide-react'
+import { toast } from "sonner"
+import { fetchElderData } from "@/lib/api/google-sheets"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+
+interface ElderData {
+  [key: string]: string
+}
 
 export default function ElderDatabasePage() {
   const [activeTab, setActiveTab] = useState("table")
+  const [elders, setElders] = useState<string[][]>([])
+  const [filteredElders, setFilteredElders] = useState<string[][]>([])
+  const [searchTerm, setSearchTerm] = useState("")
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [headers, setHeaders] = useState<string[]>([])
+
+  useEffect(() => {
+    loadElderData()
+  }, [])
+
+  const loadElderData = async () => {
+    try {
+      setLoading(true)
+      const response = await fetchElderData()
+      
+      if (!Array.isArray(response.elders) || response.elders.length < 2) {
+        throw new Error('資料格式不正確')
+      }
+
+      // 第一列是欄位名稱
+      const columnHeaders = Object.keys(response.elders[0])
+      if (!Array.isArray(columnHeaders)) {
+        throw new Error('欄位名稱格式不正確')
+      }
+      setHeaders(columnHeaders)
+
+      console.log("response.elders structure:", JSON.stringify(response.elders, null, 2))
+      const formattedElders = response.elders.map((row: any) => 
+        columnHeaders.map(header => row[header] || '')
+      )
+
+      setElders(formattedElders)
+      setFilteredElders(formattedElders)
+      setError(null)
+    } catch (err) {
+      console.error("載入資料時發生錯誤:", err)
+      setError("無法載入長者資料，請稍後再試")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSearch = (value: string) => {
+    setSearchTerm(value)
+    const filtered = elders.filter(row => 
+      row.some(cell => 
+        cell.toLowerCase().includes(value.toLowerCase())
+      )
+    )
+    setFilteredElders(filtered)
+  }
+
+  const handleFilter = () => {
+    // 實作篩選功能
+    console.log("篩選功能待實作")
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
+          <p className="mt-4 text-gray-600">載入中...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <p className="text-red-500">{error}</p>
+          <Button 
+            onClick={loadElderData}
+            className="mt-4"
+          >
+            重試
+          </Button>
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <div className="p-6 space-y-6 ml-48">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">長輩資料庫</h1>
-        <div className="flex space-x-2">
-          <Button variant="outline">
-            <Upload className="mr-2 h-4 w-4" />
-            匯入 Excel
-          </Button>
-          <Button>
-            <Plus className="mr-2 h-4 w-4" />
-            新增長輩
-          </Button>
-        </div>
-      </div>
+    <div className="container mx-auto py-8 ml-48">
+      <Card>
+        <CardHeader>
+          <CardTitle>長者資料庫</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center space-x-4 mb-6">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <Input
+                placeholder="搜尋長者資料..."
+                value={searchTerm}
+                onChange={(e) => handleSearch(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <Button variant="outline" onClick={handleFilter}>
+              <Filter className="mr-2 h-4 w-4" />
+              篩選
+            </Button>
+          </div>
 
-      <div className="flex items-center space-x-2">
-        <div className="relative flex-1">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input type="search" placeholder="搜尋長輩資料..." className="pl-8" />
-        </div>
-        <Button variant="outline">篩選</Button>
-      </div>
-
-      <Tabs defaultValue="table" onValueChange={setActiveTab}>
-        <TabsList>
-          <TabsTrigger value="table">表格檢視</TabsTrigger>
-          <TabsTrigger value="excel">Excel 檢視</TabsTrigger>
-        </TabsList>
-        <TabsContent value="table" className="mt-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>長輩資料列表</CardTitle>
-              <CardDescription>所有長輩的基本資料</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="overflow-x-auto">
-                <table className="w-full border-collapse">
-                  <thead>
-                    <tr className="border-b">
-                      <th className="py-3 px-4 text-left font-medium">姓名</th>
-                      <th className="py-3 px-4 text-left font-medium">年齡</th>
-                      <th className="py-3 px-4 text-left font-medium">性別</th>
-                      <th className="py-3 px-4 text-left font-medium">入住日期</th>
-                      <th className="py-3 px-4 text-left font-medium">照護等級</th>
-                      <th className="py-3 px-4 text-left font-medium">主要聯絡人</th>
-                      <th className="py-3 px-4 text-left font-medium">操作</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {[
-                      {
-                        name: "王大明",
-                        age: 78,
-                        gender: "男",
-                        date: "2022/03/15",
-                        level: "中度",
-                        contact: "王小明 (兒子)",
-                      },
-                      {
-                        name: "李小芬",
-                        age: 82,
-                        gender: "女",
-                        date: "2021/08/20",
-                        level: "輕度",
-                        contact: "李大華 (女兒)",
-                      },
-                      {
-                        name: "張美麗",
-                        age: 75,
-                        gender: "女",
-                        date: "2023/01/10",
-                        level: "中度",
-                        contact: "張小美 (女兒)",
-                      },
-                      {
-                        name: "陳志明",
-                        age: 80,
-                        gender: "男",
-                        date: "2022/05/05",
-                        level: "重度",
-                        contact: "陳小明 (兒子)",
-                      },
-                      {
-                        name: "林淑芬",
-                        age: 76,
-                        gender: "女",
-                        date: "2022/11/18",
-                        level: "輕度",
-                        contact: "林大方 (兒子)",
-                      },
-                      {
-                        name: "黃建國",
-                        age: 85,
-                        gender: "男",
-                        date: "2021/04/30",
-                        level: "中度",
-                        contact: "黃小華 (女兒)",
-                      },
-                      {
-                        name: "吳麗珠",
-                        age: 79,
-                        gender: "女",
-                        date: "2023/02/22",
-                        level: "輕度",
-                        contact: "吳大維 (兒子)",
-                      },
-                      {
-                        name: "趙明德",
-                        age: 83,
-                        gender: "男",
-                        date: "2022/07/12",
-                        level: "重度",
-                        contact: "趙小德 (兒子)",
-                      },
-                    ].map((elder, i) => (
-                      <tr key={i} className="border-b">
-                        <td className="py-3 px-4">{elder.name}</td>
-                        <td className="py-3 px-4">{elder.age}</td>
-                        <td className="py-3 px-4">{elder.gender}</td>
-                        <td className="py-3 px-4">{elder.date}</td>
-                        <td className="py-3 px-4">{elder.level}</td>
-                        <td className="py-3 px-4">{elder.contact}</td>
-                        <td className="py-3 px-4">
-                          <Button variant="outline" size="sm">
-                            查看
-                          </Button>
-                        </td>
-                      </tr>
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList>
+              <TabsTrigger value="table">表格檢視</TabsTrigger>
+            </TabsList>
+            <TabsContent value="table">
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      {headers.map((header, index) => (
+                        <TableHead key={index}>{header}</TableHead>
+                      ))}
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredElders.map((row, index) => (
+                      <TableRow key={index}>
+                        {row.map((cell, cellIndex) => (
+                          <TableCell key={cellIndex}>{cell}</TableCell>
+                        ))}
+                      </TableRow>
                     ))}
-                  </tbody>
-                </table>
+                  </TableBody>
+                </Table>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        <TabsContent value="excel" className="mt-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Excel 檢視</CardTitle>
-              <CardDescription>以 Excel 格式檢視長輩資料</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="bg-muted rounded-md p-8 text-center">
-                <p className="text-muted-foreground">Excel 嵌入視圖將在此處顯示</p>
-                <p className="text-sm text-muted-foreground mt-2">（實際整合時將嵌入 Excel Online 或類似服務）</p>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
     </div>
   )
 }

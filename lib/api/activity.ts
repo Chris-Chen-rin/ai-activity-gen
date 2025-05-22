@@ -7,7 +7,10 @@ export async function generateActivity(data: ActivityGenerationRequest): Promise
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        ...data,
+        participants: Array.isArray(data.participants) ? data.participants.join(', ') : data.participants
+      }),
     })
 
     if (!response.ok) {

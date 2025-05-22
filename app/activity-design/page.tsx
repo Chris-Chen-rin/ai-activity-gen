@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -8,22 +8,93 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Loader2, Search, Wand2 } from "lucide-react"
+import { Check, ChevronsUpDown, Loader2, Search, Wand2, X } from "lucide-react"
 import { toast } from "sonner"
 import { ActivityFormData, ActivityResponse } from "@/lib/types/activity"
 import { generateActivity } from "@/lib/api/activity"
+import { fetchElderData } from "@/lib/api/google-sheets"
+import { cn } from "@/lib/utils"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { Badge } from "@/components/ui/badge"
 
 export default function ActivityDesignPage() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [formData, setFormData] = useState<ActivityFormData>({
     goal: "",
-    participants: "",
+    participants: [],
     duration: "",
     preferences: ""
   })
   const [generatedActivity, setGeneratedActivity] = useState<ActivityResponse | null>(null)
+  const [elders, setElders] = useState<{
+    id: string;
+    name: string;
+    age?: number;
+    gender?: string;
+    adlScore?: number;
+    cdrScore?: number;
+    healthTraining?: string;
+  }[]>([])
+  const [loading, setLoading] = useState(true)
+  const [open, setOpen] = useState(false)
 
-  const handleInputChange = (field: keyof ActivityFormData, value: string) => {
+  useEffect(() => {
+    loadElderData()
+  }, [])
+
+  const loadElderData = async () => {
+    try {
+      setLoading(true)
+      const response = await fetchElderData()
+      
+      if (!Array.isArray(response.elders) || response.elders.length < 2) {
+        throw new Error('資料格式不正確')
+      }
+
+      // 第一列是欄位名稱
+      const columnHeaders = Object.keys(response.elders[0])
+      const nameIndex = columnHeaders.findIndex(header => header.toLowerCase().includes('姓名'))
+      const ageIndex = columnHeaders.findIndex(header => header.toLowerCase().includes('年齡'))
+      const genderIndex = columnHeaders.findIndex(header => header.toLowerCase().includes('性別'))
+      const adlIndex = columnHeaders.findIndex(header => header.toLowerCase().includes('adl'))
+      const cdrIndex = columnHeaders.findIndex(header => header.toLowerCase().includes('cdr'))
+      const healthIndex = columnHeaders.findIndex(header => header.toLowerCase().includes('健康訓練'))
+      
+      if (nameIndex === -1) {
+        throw new Error('找不到姓名欄位')
+      }
+
+      const formattedElders = response.elders.slice(1).map((row, index) => ({
+        id: `elder-${index}`,
+        name: row[nameIndex] || `長輩 ${Object.values(response.elders[index])[nameIndex]}`,
+        age: ageIndex !== -1 ? Number(row[ageIndex]) : undefined,
+        gender: genderIndex !== -1 ? row[genderIndex] : undefined,
+        adlScore: adlIndex !== -1 ? Number(row[adlIndex]) : undefined,
+        cdrScore: cdrIndex !== -1 ? Number(row[cdrIndex]) : undefined,
+        healthTraining: healthIndex !== -1 ? row[healthIndex] : undefined
+      }))
+
+      setElders(formattedElders)
+    } catch (err) {
+      console.error("載入資料時發生錯誤:", err)
+      toast.error("無法載入長者資料，請稍後再試")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleInputChange = (field: keyof ActivityFormData, value: string | string[]) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
@@ -33,9 +104,37 @@ export default function ActivityDesignPage() {
   const handleGenerate = async () => {
     try {
       setIsGenerating(true)
-      const result = await generateActivity(formData)
+      
+      // 獲取已選擇長輩的詳細資訊
+      const selectedEldersInfo = formData.participants.map(name => {
+        const elder = elders.find(e => e.name === name)
+        if (!elder) return name
+
+        const info = [`姓名：${elder.name}`]
+        if (elder.age) info.push(`年齡：${elder.age}歲`)
+        if (elder.gender) info.push(`性別：${elder.gender}`)
+        if (elder.adlScore) info.push(`ADL評分：${elder.adlScore}`)
+        if (elder.cdrScore) info.push(`CDR評分：${elder.cdrScore}`)
+        if (elder.healthTraining) info.push(`健康訓練：${elder.healthTraining}`)
+        
+        return info.join('，')
+      })
+
+      const result = await generateActivity({
+        ...formData,
+        participants: selectedEldersInfo.join('\n')
+      })
+      
       setGeneratedActivity(result)
       toast.success("活動設計生成成功！")
+      
+      // 等待 DOM 更新後滾動到活動設計部分
+      setTimeout(() => {
+        const activityCard = document.getElementById('generated-activity')
+        if (activityCard) {
+          activityCard.scrollIntoView({ behavior: 'smooth' })
+        }
+      }, 100)
     } catch (error) {
       console.error("生成活動時發生錯誤:", error)
       toast.error(error instanceof Error ? error.message : "活動生成失敗，請稍後再試")
@@ -87,22 +186,85 @@ export default function ActivityDesignPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="participants">參與對象</Label>
-                <Select
-                  value={formData.participants}
-                  onValueChange={(value) => handleInputChange("participants", value)}
-                >
-                  <SelectTrigger id="participants">
-                    <SelectValue placeholder="選擇參與長輩類型" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">所有長輩</SelectItem>
-                    <SelectItem value="mild">輕度失能長輩</SelectItem>
-                    <SelectItem value="moderate">中度失能長輩</SelectItem>
-                    <SelectItem value="severe">重度失能長輩</SelectItem>
-                    <SelectItem value="dementia">失智症長輩</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label>參與對象</Label>
+                <Popover open={open} onOpenChange={setOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={open}
+                      className="w-full justify-between"
+                    >
+                      {formData.participants.length > 0
+                        ? `${formData.participants.length} 位長輩已選擇`
+                        : "選擇參與長輩"}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-full p-0">
+                    <Command>
+                      <CommandInput placeholder="搜尋長輩名字..." />
+                      <CommandEmpty>找不到符合的長輩</CommandEmpty>
+                      <CommandGroup className="max-h-64 overflow-auto">
+                        {elders.map((elder) => (
+                          <CommandItem
+                            key={elder.id}
+                            onSelect={() => {
+                              const newParticipants = formData.participants.includes(elder.name)
+                                ? formData.participants.filter(name => name !== elder.name)
+                                : [...formData.participants, elder.name]
+                              handleInputChange("participants", newParticipants)
+                            }}
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                formData.participants.includes(elder.name) ? "opacity-100" : "opacity-0"
+                              )}
+                            />
+                            {elder.name}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+                {formData.participants.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {formData.participants.map((name) => (
+                      <Badge
+                        key={name}
+                        variant="secondary"
+                        className="flex items-center gap-1"
+                      >
+                        {name}
+                        <button
+                          className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              handleInputChange(
+                                "participants",
+                                formData.participants.filter((n) => n !== name)
+                              )
+                            }
+                          }}
+                          onMouseDown={(e) => {
+                            e.preventDefault()
+                            e.stopPropagation()
+                          }}
+                          onClick={() => {
+                            handleInputChange(
+                              "participants",
+                              formData.participants.filter((n) => n !== name)
+                            )
+                          }}
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </Badge>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -138,7 +300,7 @@ export default function ActivityDesignPage() {
               <Button
                 className="w-full"
                 onClick={handleGenerate}
-                disabled={isGenerating || !formData.goal || !formData.participants || !formData.duration}
+                disabled={isGenerating || !formData.goal || formData.participants.length === 0 || !formData.duration}
               >
                 {isGenerating ? (
                   <>
@@ -156,12 +318,21 @@ export default function ActivityDesignPage() {
           </Card>
 
           {generatedActivity && (
-            <Card>
+            <Card id="generated-activity">
               <CardHeader>
                 <CardTitle>{generatedActivity.name}</CardTitle>
                 <CardDescription>AI 生成的活動設計</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
+                <div>
+                  <h3 className="text-sm font-medium text-muted-foreground mb-2">參與對象</h3>
+                  <ul className="list-disc pl-5 text-sm space-y-1">
+                    {generatedActivity.participants.map((participant, i) => (
+                      <li key={i}>{participant}</li>
+                    ))}
+                  </ul>
+                </div>
+
                 <div>
                   <h3 className="text-sm font-medium text-muted-foreground mb-2">活動描述</h3>
                   <p className="text-sm">{generatedActivity.description}</p>

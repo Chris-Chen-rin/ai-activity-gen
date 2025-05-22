@@ -8,6 +8,7 @@ export interface ActivityGenerationRequest {
 export interface ActivityResponse {
   name: string
   description: string
+  participants: string[]
   objectives: string[]
   materials: string[]
   procedure: string[]
@@ -16,7 +17,7 @@ export interface ActivityResponse {
 
 export interface ActivityFormData {
   goal: string
-  participants: string
+  participants: string[]
   duration: string
   preferences: string
 } 

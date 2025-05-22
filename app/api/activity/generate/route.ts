@@ -18,6 +18,7 @@ interface GenerateActivityRequest {
 interface ActivityResponse {
   name: string
   description: string
+  participants: string[]
   objectives: string[]
   materials: string[]
   procedure: string[]
@@ -49,6 +50,7 @@ export async function POST(request: Request) {
 {
   "name": "活動名稱",
   "description": "活動描述",
+  "participants": ["參與者1", "參與者2", ...],
   "objectives": ["目標1", "目標2", ...],
   "materials": ["材料1", "材料2", ...],
   "procedure": ["步驟1", "步驟2", ...],
