@@ -25,7 +25,7 @@ export function AppSidebar() {
   }
 
   return (
-    <Sidebar className="bg-black text-white">
+    <Sidebar className=" bg-[#000000] text-white">
       <SidebarHeader className="flex items-center justify-center py-4 border-b border-gray-800">
         <h1 className="text-xl font-bold">長者照護平台</h1>
       </SidebarHeader>
@@ -35,7 +35,7 @@ export function AppSidebar() {
             <SidebarMenuButton
               asChild
               isActive={isActive("/")}
-              className="hover:bg-blue-500 data-[active=true]:bg-gray-800"
+              className="hover:bg-[#c2e8f8] data-[active=true]:bg-[#75dfd3]"
             >
               <Link href="/">
                 <Home />
@@ -47,7 +47,7 @@ export function AppSidebar() {
             <SidebarMenuButton
               asChild
               isActive={isActive("/record")}
-              className="hover:bg-blue-500 data-[active=true]:bg-gray-800"
+              className="hover:bg-[#c2e8f8] data-[active=true]:bg-[#75dfd3]"
             >
               <Link href="/record">
                 <ClipboardList />
@@ -59,7 +59,7 @@ export function AppSidebar() {
             <SidebarMenuButton
               asChild
               isActive={isActive("/life-story")}
-              className="hover:bg-blue-500 data-[active=true]:bg-gray-800"
+              className="hover:bg-[#c2e8f8] data-[active=true]:bg-[#75dfd3]"
             >
               <Link href="/life-story">
                 <BookOpen />
@@ -71,7 +71,7 @@ export function AppSidebar() {
             <SidebarMenuButton
               asChild
               isActive={isActive("/elder-database")}
-              className="hover:bg-blue-500 data-[active=true]:bg-gray-800"
+              className="hover:bg-[#c2e8f8] data-[active=true]:bg-[#75dfd3]"
             >
               <Link href="/elder-database">
                 <Database />
@@ -83,7 +83,7 @@ export function AppSidebar() {
             <SidebarMenuButton
               asChild
               isActive={isActive("/activity-design")}
-              className="hover:bg-blue-500 data-[active=true]:bg-gray-800"
+              className="hover:bg-[#c2e8f8] data-[active=true]:bg-[#75dfd3]"
             >
               <Link href="/activity-design">
                 <PenSquare />

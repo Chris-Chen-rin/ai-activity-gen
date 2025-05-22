@@ -61,12 +61,11 @@ export default function ActivityDesignPage() {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 ml-48">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">設計活動</h1>
         <div className="flex space-x-2">
           <Button variant="outline">儲存活動</Button>
-          <Button>新增至行事曆</Button>
         </div>
       </div>
 

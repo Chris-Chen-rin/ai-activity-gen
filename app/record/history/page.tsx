@@ -6,7 +6,7 @@ import { ChevronLeft, Search } from "lucide-react"
 
 export default function ActivityHistoryPage() {
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 ml-48">
       <div className="flex items-center space-x-2">
         <Button variant="outline" size="icon" asChild>
           <Link href="/record">

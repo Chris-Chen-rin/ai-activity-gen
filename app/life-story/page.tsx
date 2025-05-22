@@ -6,7 +6,7 @@ import { Plus, Search } from "lucide-react"
 
 export default function LifeStoryPage() {
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 ml-48">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">生命故事書</h1>
         <Button>

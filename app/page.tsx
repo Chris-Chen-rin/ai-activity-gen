@@ -3,7 +3,7 @@ import { BarChart3, Calendar, ClipboardList, Users } from "lucide-react"
 
 export default function Dashboard() {
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 ml-48">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">主頁面</h1>
         <div className="text-sm text-muted-foreground">

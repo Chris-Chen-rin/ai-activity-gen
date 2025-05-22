@@ -11,7 +11,7 @@ export function Sidebar({
   return (
     <div
       className={clsx(
-        "flex flex-col h-screen w-64 bg-white border-r border-gray-200", // 預設樣式
+        "flex flex-col fixed left-0 top-0 h-screen z-50 w-48 bg-black border-r border-gray-200", // 預設樣式
         className // 外部可覆蓋
       )}
     >
@@ -110,8 +110,8 @@ export function SidebarMenuButton({
   const baseClass =
     "flex items-center px-4 py-2 text-sm font-medium rounded transition-colors"
 
-  const activeClass = "bg-gray-800 text-white"
-  const inactiveClass = "text-gray-300 hover:bg-gray-700"
+  const activeClass = "bg-[#75dfd3] text-white"
+  const inactiveClass = "text-gray-300 hover:bg-[#c2e8f8]"
 
   const finalClass = clsx(
     baseClass,
