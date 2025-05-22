@@ -1,4 +1,6 @@
-import React from "react"
+"use client"
+
+import type React from "react"
 import clsx from "clsx"
 
 export function Sidebar({
@@ -12,7 +14,7 @@ export function Sidebar({
     <div
       className={clsx(
         "flex flex-col fixed left-0 top-0 h-screen z-50 w-48 bg-black border-r border-gray-200", // 預設樣式
-        className // 外部可覆蓋
+        className, // 外部可覆蓋
       )}
     >
       {children}
@@ -28,11 +30,7 @@ export function SidebarHeader({
   className?: string
   children: React.ReactNode
 }) {
-  return (
-    <div className={clsx("p-4", className)}>
-      {children}
-    </div>
-  )
+  return <div className={clsx("p-4", className)}>{children}</div>
 }
 
 // 子元件：內容區
@@ -43,11 +41,7 @@ export function SidebarContent({
   className?: string
   children: React.ReactNode
 }) {
-  return (
-    <div className={clsx("flex-1 overflow-y-auto", className)}>
-      {children}
-    </div>
-  )
+  return <div className={clsx("flex-1 overflow-y-auto", className)}>{children}</div>
 }
 
 // 子元件：底部
@@ -58,11 +52,7 @@ export function SidebarFooter({
   className?: string
   children: React.ReactNode
 }) {
-  return (
-    <div className={clsx("p-4", className)}>
-      {children}
-    </div>
-  )
+  return <div className={clsx("p-4", className)}>{children}</div>
 }
 
 // 子元件：導覽列（選單容器）
@@ -73,11 +63,7 @@ export function SidebarMenu({
   className?: string
   children: React.ReactNode
 }) {
-  return (
-    <nav className={clsx("space-y-1", className)}>
-      {children}
-    </nav>
-  )
+  return <nav className={clsx("space-y-1", className)}>{children}</nav>
 }
 
 // 子元件：單一選項
@@ -88,11 +74,7 @@ export function SidebarMenuItem({
   className?: string
   children: React.ReactNode
 }) {
-  return (
-    <div className={clsx("", className)}>
-      {children}
-    </div>
-  )
+  return <div className={clsx("", className)}>{children}</div>
 }
 
 // 子元件：按鈕
@@ -107,17 +89,12 @@ export function SidebarMenuButton({
   asChild?: boolean
   children: React.ReactNode
 }) {
-  const baseClass =
-    "flex items-center px-4 py-2 text-sm font-medium rounded transition-colors"
+  const baseClass = "flex items-center px-4 py-2 text-sm font-medium rounded transition-colors"
 
   const activeClass = "bg-[#75dfd3] text-white"
   const inactiveClass = "text-gray-300 hover:bg-[#c2e8f8]"
 
-  const finalClass = clsx(
-    baseClass,
-    isActive ? activeClass : inactiveClass,
-    className
-  )
+  const finalClass = clsx(baseClass, isActive ? activeClass : inactiveClass, className)
 
   if (asChild) {
     return <div className={finalClass}>{children}</div>
@@ -131,8 +108,7 @@ export function SidebarRail() {
   return null // 保留擴充空間
 }
 
-
-import React, { createContext, useContext, useState } from "react"
+import { createContext, useContext, useState } from "react"
 
 interface SidebarContextType {
   isOpen: boolean
@@ -146,15 +122,11 @@ const SidebarContext = createContext<SidebarContextType | undefined>(undefined)
 export const SidebarProvider = ({ children }: { children: React.ReactNode }) => {
   const [isOpen, setIsOpen] = useState(true)
 
-  const toggle = () => setIsOpen(prev => !prev)
+  const toggle = () => setIsOpen((prev) => !prev)
   const open = () => setIsOpen(true)
   const close = () => setIsOpen(false)
 
-  return (
-    <SidebarContext.Provider value={{ isOpen, toggle, open, close }}>
-      {children}
-    </SidebarContext.Provider>
-  )
+  return <SidebarContext.Provider value={{ isOpen, toggle, open, close }}>{children}</SidebarContext.Provider>
 }
 
 export const useSidebar = (): SidebarContextType => {
