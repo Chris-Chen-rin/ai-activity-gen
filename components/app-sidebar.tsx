@@ -96,7 +96,7 @@ export function AppSidebar() {
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter className="p-4 text-center text-sm text-gray-400 border-t border-blue-500">
-        © 2025 長者照護平台
+        © 2025 織憶光毯
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

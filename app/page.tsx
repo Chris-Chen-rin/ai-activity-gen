@@ -41,7 +41,7 @@ export default function Dashboard() {
             <div className="text-2xl font-bold">4.8/5</div>
             <p className="text-xs text-muted-foreground">較上月增加 0.2</p>
           </CardContent>
-        </Card>
+        </Card> {/*
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">待完成紀錄</CardTitle>
@@ -51,7 +51,7 @@ export default function Dashboard() {
             <div className="text-2xl font-bold">3</div>
             <p className="text-xs text-muted-foreground">較昨日減少 2</p>
           </CardContent>
-        </Card>
+        </Card> */}
       </div>
 
       <div className="grid gap-4">
