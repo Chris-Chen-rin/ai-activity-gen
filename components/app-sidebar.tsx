@@ -27,7 +27,8 @@ export function AppSidebar() {
   return (
     <Sidebar className=" bg-[#000000] text-white">
       <SidebarHeader className="flex items-center justify-center py-4 border-b border-gray-800">
-        <h1 className="text-xl font-bold">長者照護平台</h1>
+        <h1 className="text-xl font-bold">織憶光毯</h1>
+        <p className="text-sm text-gray-500 italic">為長輩編織共鳴活動，串聯溫馨記憶迴廊</p>
       </SidebarHeader>
       <SidebarContent>
         <SidebarMenu>
