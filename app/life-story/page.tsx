@@ -26,11 +26,6 @@ export default function LifeStoryPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {[
           { name: "王大明", age: 78, progress: 85 },
-          { name: "李小芬", age: 82, progress: 100 },
-          { name: "張美麗", age: 75, progress: 60 },
-          { name: "陳志明", age: 80, progress: 90 },
-          { name: "林淑芬", age: 76, progress: 40 },
-          { name: "黃建國", age: 85, progress: 70 },
         ].map((elder, i) => (
           <Card key={i}>
             <CardHeader>
