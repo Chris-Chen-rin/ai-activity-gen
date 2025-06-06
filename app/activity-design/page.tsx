@@ -48,6 +48,7 @@ export default function ActivityDesignPage() {
   }[]>([])
   const [loading, setLoading] = useState(true)
   const [open, setOpen] = useState(false)
+  const [selectedDependencyLevel, setSelectedDependencyLevel] = useState<'moderate' | 'severe' | 'verySevere' | null>(null)
 
   useEffect(() => {
     loadElderData()
@@ -67,7 +68,11 @@ export default function ActivityDesignPage() {
       const nameIndex = columnHeaders.findIndex(header => header.toLowerCase().includes('姓名'))
       const ageIndex = columnHeaders.findIndex(header => header.toLowerCase().includes('年齡'))
       const genderIndex = columnHeaders.findIndex(header => header.toLowerCase().includes('性別'))
-      const adlIndex = columnHeaders.findIndex(header => header.toLowerCase().includes('adl'))
+      const adlIndex = columnHeaders.findIndex(header => 
+        header.toLowerCase().includes('adl') || 
+        header.toLowerCase().includes('依賴') || 
+        header.toLowerCase().includes('分數')
+      )
       const cdrIndex = columnHeaders.findIndex(header => header.toLowerCase().includes('cdr'))
       const healthIndex = columnHeaders.findIndex(header => header.toLowerCase().includes('健康訓練'))
       
@@ -75,15 +80,41 @@ export default function ActivityDesignPage() {
         throw new Error('找不到姓名欄位')
       }
 
-      const formattedElders = response.elders.slice(1).map((row, index) => ({
-        id: `elder-${index}`,
-        name: row[nameIndex] || `長輩 ${Object.values(response.elders[index])[nameIndex]}`,
-        age: ageIndex !== -1 ? Number(row[ageIndex]) : undefined,
-        gender: genderIndex !== -1 ? row[genderIndex] : undefined,
-        adlScore: adlIndex !== -1 ? Number(row[adlIndex]) : undefined,
-        cdrScore: cdrIndex !== -1 ? Number(row[cdrIndex]) : undefined,
-        healthTraining: healthIndex !== -1 ? row[healthIndex] : undefined
-      }))
+      const formattedElders = response.elders.slice(1).map((row, index) => {
+        return {
+          id: `elder-${index}`,
+          name: row[nameIndex] || `長輩 ${Object.values(response.elders[index])[nameIndex]}`,
+          age: ageIndex !== -1 ? Number(row[ageIndex]) : undefined,
+          gender: genderIndex !== -1 ? row[genderIndex] : undefined,
+          adlScore: adlIndex !== -1 ? (() => {
+            const score = Object.values(row)[adlIndex];
+            // 如果分數是字串格式（例如："ADL 65分以上"），提取數字
+            if (typeof score === 'string') {
+              // 處理 "65分以上" 的情況
+              if (score.includes('以上')) {
+                const match = score.match(/(\d+)/);
+                return match ? Number(match[1]) : undefined;
+              }
+              // 處理 "35-60分" 的情況
+              if (score.includes('-')) {
+                const match = score.match(/(\d+)/);
+                return match ? Number(match[1]) : undefined;
+              }
+              // 處理 "30分以下" 的情況
+              if (score.includes('以下')) {
+                const match = score.match(/(\d+)/);
+                return match ? Number(match[1]) : undefined;
+              }
+              // 處理純數字的情況
+              const match = score.match(/(\d+)/);
+              return match ? Number(match[1]) : undefined;
+            }
+            return Number(score);
+          })() : undefined,
+          cdrScore: cdrIndex !== -1 ? Number(row[cdrIndex]) : undefined,
+          healthTraining: healthIndex !== -1 ? row[healthIndex] : undefined
+        }
+      })
 
       setElders(formattedElders)
     } catch (err) {
@@ -120,9 +151,18 @@ export default function ActivityDesignPage() {
         return info.join('，')
       })
 
+      // 如果有前一個活動設計，在偏好中加入要求
+      let preferences = formData.preferences
+      if (generatedActivity) {
+        preferences = preferences 
+          ? `${preferences}\n\n需要和前一個設計不同，避免重複的活動內容和流程。`
+          : "需要和前一個設計不同，避免重複的活動內容和流程。"
+      }
+
       const result = await generateActivity({
         ...formData,
-        participants: selectedEldersInfo.join('\n')
+        participants: selectedEldersInfo.join('\n'),
+        preferences: preferences
       })
       
       setGeneratedActivity(result)
@@ -181,6 +221,7 @@ export default function ActivityDesignPage() {
                     <SelectItem value="social">社交互動</SelectItem>
                     <SelectItem value="emotional">情緒支持</SelectItem>
                     <SelectItem value="creative">創意表達</SelectItem>
+                    <SelectItem value="training">身體訓練</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -203,6 +244,95 @@ export default function ActivityDesignPage() {
                   </PopoverTrigger>
                   <PopoverContent className="w-full p-0">
                     <Command>
+                      <div className="flex gap-2 p-2 border-b">
+                        <Button
+                          variant={selectedDependencyLevel === 'moderate' ? "default" : "outline"}
+                          size="sm"
+                          className={cn(
+                            "flex-1",
+                            selectedDependencyLevel === 'moderate' && "bg-green-500 hover:bg-green-600"
+                          )}
+                          onClick={() => {
+                            if (selectedDependencyLevel === 'moderate') {
+                              handleInputChange("participants", [])
+                              setSelectedDependencyLevel(null)
+                            } else {
+                              const moderateElders = elders
+                                .filter(elder => elder.adlScore !== undefined && elder.adlScore >= 65)
+                                .map(elder => elder.name)
+                              handleInputChange("participants", moderateElders)
+                              setSelectedDependencyLevel('moderate')
+                            }
+                          }}
+                        >
+                          {selectedDependencyLevel === 'moderate' ? '取消選擇中度依賴' : '選擇所有中度依賴'}
+                        </Button>
+                        <Button
+                          variant={selectedDependencyLevel === 'severe' ? "default" : "outline"}
+                          size="sm"
+                          className={cn(
+                            "flex-1",
+                            selectedDependencyLevel === 'severe' && "bg-orange-500 hover:bg-orange-600"
+                          )}
+                          onClick={() => {
+                            if (selectedDependencyLevel === 'severe') {
+                              handleInputChange("participants", [])
+                              setSelectedDependencyLevel(null)
+                            } else {
+                              const severeElders = elders
+                                .filter(elder => elder.adlScore !== undefined && elder.adlScore > 30 && elder.adlScore <= 60)
+                                .map(elder => elder.name)
+                              handleInputChange("participants", severeElders)
+                              setSelectedDependencyLevel('severe')
+                            }
+                          }}
+                        >
+                          {selectedDependencyLevel === 'severe' ? '取消選擇重度依賴' : '選擇所有重度依賴'}
+                        </Button>
+                        <Button
+                          variant={selectedDependencyLevel === 'verySevere' ? "default" : "outline"}
+                          size="sm"
+                          className={cn(
+                            "flex-1",
+                            selectedDependencyLevel === 'verySevere' && "bg-red-500 hover:bg-red-600"
+                          )}
+                          onClick={() => {
+                            if (selectedDependencyLevel === 'verySevere') {
+                              handleInputChange("participants", [])
+                              setSelectedDependencyLevel(null)
+                            } else {
+                              const verySevereElders = elders
+                                .filter(elder => elder.adlScore !== undefined && elder.adlScore <= 30)
+                                .map(elder => elder.name)
+                              handleInputChange("participants", verySevereElders)
+                              setSelectedDependencyLevel('verySevere')
+                            }
+                          }}
+                        >
+                          {selectedDependencyLevel === 'verySevere' ? '取消選擇極重度依賴' : '選擇所有極重度依賴'}
+                        </Button>
+                      </div>
+                      {selectedDependencyLevel === 'severe' && (
+                        <div className="p-3 bg-orange-50 border border-orange-200 rounded-md m-2">
+                          <h4 className="font-medium text-orange-800 mb-1">注意：重度依賴長輩</h4>
+                          <ul className="text-sm text-orange-700 space-y-1">
+                            <li>• 確保活動強度適中</li>
+                            <li>• 提供適當的輔助</li>
+                            <li>• 注意安全措施</li>
+                          </ul>
+                        </div>
+                      )}
+                      {selectedDependencyLevel === 'verySevere' && (
+                        <div className="p-3 bg-red-50 border border-red-200 rounded-md m-2">
+                          <h4 className="font-medium text-red-800 mb-1">警告：極重度依賴長輩</h4>
+                          <ul className="text-sm text-red-700 space-y-1">
+                            <li>• 需要一對一照護</li>
+                            <li>• 活動強度必須非常輕微</li>
+                            <li>• 確保環境安全</li>
+                            <li>• 可能需要專業人員協助</li>
+                          </ul>
+                        </div>
+                      )}
                       <CommandInput placeholder="搜尋長輩名字..." />
                       <CommandEmpty>找不到符合的長輩</CommandEmpty>
                       <CommandGroup className="max-h-64 overflow-auto">
@@ -215,6 +345,14 @@ export default function ActivityDesignPage() {
                                 : [...formData.participants, elder.name]
                               handleInputChange("participants", newParticipants)
                             }}
+                            className={cn(
+                              "flex items-center",
+                              elder.adlScore !== undefined && {
+                                "bg-red-100/50 hover:bg-red-100": elder.adlScore <= 30, // 極重度依賴
+                                "bg-orange-100/50 hover:bg-orange-100": elder.adlScore > 30 && elder.adlScore <= 60, // 重度依賴
+                                "bg-green-100/50 hover:bg-green-100": elder.adlScore >= 65, // 中度依賴
+                              }
+                            )}
                           >
                             <Check
                               className={cn(
@@ -222,7 +360,14 @@ export default function ActivityDesignPage() {
                                 formData.participants.includes(elder.name) ? "opacity-100" : "opacity-0"
                               )}
                             />
-                            {elder.name}
+                            <div className="flex flex-col">
+                              <span>{elder.name}</span>
+                              {elder.adlScore !== undefined && (
+                                <span className="text-xs text-muted-foreground">
+                                  ADL:  {elder.adlScore <= 30 ? "極重度依賴" : elder.adlScore <= 60 ? "重度依賴" : "中度依賴"}
+                                </span>
+                              )}
+                            </div>
                           </CommandItem>
                         ))}
                       </CommandGroup>

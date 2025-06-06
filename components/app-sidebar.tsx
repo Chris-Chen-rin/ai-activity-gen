@@ -37,10 +37,10 @@ export function AppSidebar() {
             <SidebarMenuButton
               asChild
               isActive={isActive("/")}
-              className="hover:bg-[#c2e8f8] data-[active=true]:bg-[#75dfd3]"
+              className="hover:bg-[#c2e8f8] data-[active=true]:bg-[#75dfd3] w-full"
             >
-              <Link href="/">
-                <Home />
+              <Link href="/" className="flex items-center gap-2 w-full">
+                <Home className="w-5 h-5" />
                 <span>主頁面</span>
               </Link>
             </SidebarMenuButton>
@@ -49,10 +49,10 @@ export function AppSidebar() {
             <SidebarMenuButton
               asChild
               isActive={isActive("/record")}
-              className="hover:bg-[#c2e8f8] data-[active=true]:bg-[#75dfd3]"
+              className="hover:bg-[#c2e8f8] data-[active=true]:bg-[#75dfd3] w-full"
             >
-              <Link href="/record">
-                <ClipboardList />
+              <Link href="/record" className="flex items-center gap-2 w-full">
+                <ClipboardList className="w-5 h-5" />
                 <span>紀錄與評分</span>
               </Link>
             </SidebarMenuButton>
@@ -61,10 +61,10 @@ export function AppSidebar() {
             <SidebarMenuButton
               asChild
               isActive={isActive("/life-story")}
-              className="hover:bg-[#c2e8f8] data-[active=true]:bg-[#75dfd3]"
+              className="hover:bg-[#c2e8f8] data-[active=true]:bg-[#75dfd3] w-full"
             >
-              <Link href="/life-story">
-                <BookOpen />
+              <Link href="/life-story" className="flex items-center gap-2 w-full">
+                <BookOpen className="w-5 h-5" />
                 <span>生命故事書</span>
               </Link>
             </SidebarMenuButton>
@@ -73,10 +73,10 @@ export function AppSidebar() {
             <SidebarMenuButton
               asChild
               isActive={isActive("/elder-database")}
-              className="hover:bg-[#c2e8f8] data-[active=true]:bg-[#75dfd3]"
+              className="hover:bg-[#c2e8f8] data-[active=true]:bg-[#75dfd3] w-full"
             >
-              <Link href="/elder-database">
-                <Database />
+              <Link href="/elder-database" className="flex items-center gap-2 w-full">
+                <Database className="w-5 h-5" />
                 <span>長輩資料庫</span>
               </Link>
             </SidebarMenuButton>
@@ -85,10 +85,10 @@ export function AppSidebar() {
             <SidebarMenuButton
               asChild
               isActive={isActive("/activity-design")}
-              className="hover:bg-[#c2e8f8] data-[active=true]:bg-[#75dfd3]"
+              className="hover:bg-[#c2e8f8] data-[active=true]:bg-[#75dfd3] w-full"
             >
-              <Link href="/activity-design">
-                <PenSquare />
+              <Link href="/activity-design" className="flex items-center gap-2 w-full">
+                <PenSquare className="w-5 h-5" />
                 <span>設計活動</span>
               </Link>
             </SidebarMenuButton>
