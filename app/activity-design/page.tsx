@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Check, ChevronsUpDown, Loader2, Wand2, X } from "lucide-react"
+import { Check, ChevronsUpDown, Loader2, Wand2, X, FileText } from "lucide-react"
 import { toast } from "sonner"
 import { ActivityFormData, ActivityResponse } from "@/lib/types/activity"
 import { generateActivity } from "@/lib/api/activity"
@@ -63,11 +63,11 @@ export default function ActivityDesignPage() {
       }
 
       // 輸出原始資料
-      console.log('Google Sheets 原始資料:', response.elders);
+      // console.log('Google Sheets 原始資料:', response.elders);
 
       // 第一列是欄位名稱
       const columnHeaders = Object.keys(response.elders[0])
-      console.log('欄位名稱:', columnHeaders);
+      // console.log('欄位名稱:', columnHeaders);
 
       const nameIndex = columnHeaders.findIndex(header => header.toLowerCase().includes('姓名'))
       const ageIndex = columnHeaders.findIndex(header => header.toLowerCase().includes('年齡'))
@@ -83,6 +83,7 @@ export default function ActivityDesignPage() {
         header.toLowerCase().includes('訓練類型')
       )
       
+      {/* 
       console.log('欄位索引:', {
         nameIndex,
         ageIndex,
@@ -90,7 +91,7 @@ export default function ActivityDesignPage() {
         adlIndex,
         cdrIndex,
         healthIndex
-      });
+      }); */}
 
       if (nameIndex === -1) {
         throw new Error('找不到姓名欄位')
@@ -131,7 +132,7 @@ export default function ActivityDesignPage() {
         }
       })
 
-      console.log('處理後的長輩資料:', formattedElders);
+      // console.log('處理後的長輩資料:', formattedElders);
       setElders(formattedElders)
     } catch (err) {
       console.error("載入資料時發生錯誤:", err)
@@ -731,6 +732,27 @@ export default function ActivityDesignPage() {
                 )}
               </Button>
             </div>
+            {generatedActivity && (
+              <Button
+                variant="default"
+                className="flex items-center gap-2"
+                onClick={() => {
+                  // 將活動資料傳遞到紀錄頁面
+                  const activityData = {
+                    ...generatedActivity,
+                    date: new Date().toISOString(),
+                    status: 'pending' // 待評分狀態
+                  }
+                  // 儲存到 localStorage
+                  localStorage.setItem('currentActivity', JSON.stringify(activityData))
+                  // 導航到紀錄頁面
+                  window.location.href = '/record/new'
+                }}
+              >
+                <FileText className="h-4 w-4" />
+                紀錄
+              </Button>
+            )}
           </CardFooter>
         </Card>
       )}

@@ -1,92 +1,156 @@
-import Link from "next/link"
+"use client"
+
+import { useState, useEffect } from "react"
+import { useParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ChevronLeft } from "lucide-react"
+import { Loader2 } from "lucide-react"
+import { toast } from "sonner"
+import Link from "next/link"
 
-export default function ActivityDetailPage({ params }: { params: { id: string } }) {
-  // 這裡可以根據 id 獲取活動詳情
-  const activity = {
-    id: params.id,
-    name: "團體歌唱活動",
-    type: "社交活動",
-    date: "2024/05/20",
-    time: "14:00-15:30",
-    location: "活動中心大廳",
-    participants: 18,
-    description:
-      "透��團體歌唱，增進長輩之間的互動與交流，同時訓練記憶力與表達能力。活動中選用長輩熟悉的歌曲，並搭配簡單的肢體動作，讓長輩在輕鬆愉快的氛圍中參與。",
-    observation:
-      "大部分長輩積極參與，特別是在唱到熟悉的老歌時，反應熱烈。有幾位平時較為安靜的長輩也主動要求點歌，顯示出活動對促進社交互動的正面效果。部分行動不便的長輩雖無法做出較大的肢體動作，但仍跟著節奏擺動，整體參與度高。",
-    score: 4.9,
-    feedback: [
-      { name: "王奶奶", comment: "很喜歡唱歌，希望下次能再多唱幾首" },
-      { name: "李爺爺", comment: "歌曲選得很好，都是我年輕時聽的" },
-      { name: "張奶奶", comment: "氣氛很好，大家一起唱很開心" },
-    ],
+interface Activity {
+  ID: string
+  活動類別: string
+  活動類型: string
+  活動主題: string
+  活動名稱: string
+  活動時間範圍: string
+  活動地點: string
+  帶領者: string
+  協助者: string
+  參與者程度: string
+  參與人數: string
+  活動目的: string
+  活動器材: string
+  活動內容: string
+  注意事項: string
+  參與成員: string
+}
+
+export default function ActivityDetailPage() {
+  const params = useParams()
+  const [activity, setActivity] = useState<Activity | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchActivity()
+  }, [params.id])
+
+  const fetchActivity = async () => {
+    try {
+      setLoading(true)
+      console.log('正在獲取活動資料，ID:', params.id)
+      
+      const response = await fetch('/api/activities')
+      
+      if (!response.ok) {
+        throw new Error('無法獲取活動資料')
+      }
+
+      const data = await response.json()
+      console.log('獲取到的所有活動資料:', data)
+      console.log('正在尋找 ID 為', params.id, '的活動')
+      
+      // 檢查每個活動的 ID
+      data.forEach((a: Activity, index: number) => {
+        console.log(`活動 ${index} 的 ID:`, a.ID, '型別:', typeof a.ID)
+      })
+
+      const foundActivity = data.find((a: Activity) => {
+        console.log('比對 ID:', a.ID, '與', params.id)
+        return String(a.ID) === String(params.id)
+      })
+      
+      if (!foundActivity) {
+        console.error('找不到 ID 為', params.id, '的活動')
+        throw new Error('找不到指定的活動')
+      }
+
+      console.log('找到活動:', foundActivity)
+      setActivity(foundActivity)
+    } catch (error) {
+      console.error('獲取活動資料時發生錯誤:', error)
+      toast.error('無法載入活動資料，請稍後再試')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="p-6 space-y-6 ml-48">
+        <div className="flex justify-center items-center py-8">
+          <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+        </div>
+      </div>
+    )
+  }
+
+  if (!activity) {
+    return (
+      <div className="p-6 space-y-6 ml-48">
+        <Card>
+          <CardHeader>
+            <CardTitle>找不到活動</CardTitle>
+            <CardDescription>無法找到指定的活動資料</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button asChild>
+              <Link href="/record/history">返回活動列表</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   return (
     <div className="p-6 space-y-6 ml-48">
-      <div className="flex items-center space-x-2">
-        <Button variant="outline" size="icon" asChild>
-          <Link href="/record">
-            <ChevronLeft className="h-4 w-4" />
-          </Link>
-        </Button>
-        <h1 className="text-3xl font-bold">活動詳情</h1>
-      </div>
-
       <Card>
         <CardHeader>
-          <CardTitle>{activity.name}</CardTitle>
-          <CardDescription>
-            {activity.date} {activity.time} | {activity.location}
-          </CardDescription>
+          <div className="flex justify-between items-center">
+            <div>
+              <CardTitle>{activity.活動名稱}</CardTitle>
+              <CardDescription>
+                {activity.活動時間範圍} | {activity.活動地點}
+              </CardDescription>
+            </div>
+            <Button asChild variant="outline">
+              <Link href="/record/history">返回列表</Link>
+            </Button>
+          </div>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <h3 className="text-sm font-medium text-muted-foreground">活動類型</h3>
-              <p>{activity.type}</p>
-            </div>
-            <div>
-              <h3 className="text-sm font-medium text-muted-foreground">參與人數</h3>
-              <p>{activity.participants} 人</p>
-            </div>
-            <div>
-              <h3 className="text-sm font-medium text-muted-foreground">活動評分</h3>
-              <p className="text-green-600 font-medium">{activity.score}/5</p>
-            </div>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-medium text-muted-foreground mb-2">活動描述</h3>
-            <p className="text-sm">{activity.description}</p>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-medium text-muted-foreground mb-2">觀察與記錄</h3>
-            <p className="text-sm">{activity.observation}</p>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-medium text-muted-foreground mb-2">長輩回饋</h3>
-            <div className="space-y-2">
-              {activity.feedback.map((item, i) => (
-                <div key={i} className="bg-muted p-3 rounded-md">
-                  <p className="font-medium">{item.name}</p>
-                  <p className="text-sm">{item.comment}</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-sm font-medium text-muted-foreground mb-2">基本資訊</h3>
+                <div className="space-y-2">
+                  <p className="text-sm"><span className="text-muted-foreground">活動類別：</span>{activity.活動類別}</p>
+                  <p className="text-sm"><span className="text-muted-foreground">活動類型：</span>{activity.活動類型}</p>
+                  <p className="text-sm"><span className="text-muted-foreground">活動主題：</span>{activity.活動主題}</p>
+                  <p className="text-sm"><span className="text-muted-foreground">帶領者：</span>{activity.帶領者}</p>
+                  <p className="text-sm"><span className="text-muted-foreground">協助者：</span>{activity.協助者}</p>
+                  <p className="text-sm"><span className="text-muted-foreground">參與者程度：</span>{activity.參與者程度}</p>
+                  <p className="text-sm"><span className="text-muted-foreground">參與人數：</span>{activity.參與人數}</p>
                 </div>
-              ))}
+              </div>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-sm font-medium text-muted-foreground mb-2">活動內容</h3>
+                <div className="space-y-2">
+                  <p className="text-sm"><span className="text-muted-foreground">活動目的：</span>{activity.活動目的}</p>
+                  <p className="text-sm"><span className="text-muted-foreground">活動器材：</span>{activity.活動器材}</p>
+                  <p className="text-sm"><span className="text-muted-foreground">活動內容：</span>{activity.活動內容}</p>
+                  <p className="text-sm"><span className="text-muted-foreground">注意事項：</span>{activity.注意事項}</p>
+                  <p className="text-sm"><span className="text-muted-foreground">參與成員：</span>{activity.參與成員}</p>
+                </div>
+              </div>
             </div>
           </div>
         </CardContent>
       </Card>
-
-      <div className="flex justify-end space-x-2">
-        <Button variant="outline">列印報告</Button>
-        <Button variant="outline">編輯紀錄</Button>
-      </div>
     </div>
   )
 }
