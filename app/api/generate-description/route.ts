@@ -42,12 +42,12 @@ export async function POST(request: Request) {
 
     // 轉換 Google Drive URL
     const directImageUrl = convertGoogleDriveUrl(imageUrl)
-    console.log('原始URL:', imageUrl)
-    console.log('轉換後的URL:', directImageUrl)
+    // console.log('原始URL:', imageUrl)
+    // console.log('轉換後的URL:', directImageUrl)
 
     // 下載圖片並轉換為 base64
     const base64Image = await getImageAsBase64(directImageUrl)
-    console.log('圖片已轉換為 base64')
+    // console.log('圖片已轉換為 base64')
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4o",

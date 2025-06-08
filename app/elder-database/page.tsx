@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 // @ts-ignore
 import { Plus, Search, Filter } from 'lucide-react'
@@ -111,7 +110,7 @@ export default function ElderDatabasePage() {
 
   return (
     <div className="p-6 space-y-6 ml-48 min-h-screen bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/background.jpg)' }}>
-      <Card className="bg-white/130 backdrop-blur-sm">
+      <Card className="bg-white/130 backdrop-blur-[2px]">
         <CardHeader>
           <CardTitle>長者資料庫</CardTitle>
           <CardDescription>管理長者基本資料</CardDescription>
@@ -133,51 +132,44 @@ export default function ElderDatabasePage() {
             </Button>
           </div>
 
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList>
-              <TabsTrigger value="table">表格檢視</TabsTrigger>
-            </TabsList>
-            <TabsContent value="table">
-              <div className="rounded-md border border-stone-600 overflow-x-auto" style={{ maxHeight: 'calc(100vh - 300px)' }}>
-                <Table>
-                  <TableHeader>
-                    <TableRow className="bg-stone-400">
-                      {headers.map((header, index) => (
-                        <TableHead 
-                          key={index} 
-                          className={`${
-                            index < 8 ? 'w-[70px] max-w-[70px]' : 
-                            index === 8 ? 'w-[140px] max-w-[140px]' : 
-                            'w-[90px] max-w-[90px]'
-                          } truncate sticky top-0 bg-stone-100 font-bold`}
-                        >
-                          {header}
-                        </TableHead>
-                      ))}
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredElders.map((row, index) => (
-                      <TableRow key={index} className="hover:bg-stone-300/50 border-b border-stone-600">
-                        {row.map((cell, cellIndex) => (
-                          <TableCell 
-                            key={cellIndex} 
-                            className={`${
-                              cellIndex < 8 ? 'w-[70px] max-w-[70px]' : 
-                              cellIndex === 8 ? 'w-[140px] max-w-[140px]' : 
-                              'w-[90px] max-w-[90px]'
-                            } truncate`}
-                          >
-                            {cell}
-                          </TableCell>
-                        ))}
-                      </TableRow>
+          <div className="rounded-md border border-stone-600 overflow-x-auto" style={{ maxHeight: 'calc(100vh - 300px)' }}>
+            <Table>
+              <TableHeader className="bg-stone-500">
+                <TableRow className="bg-stone-500">
+                  {headers.map((header, index) => (
+                    <TableHead 
+                      key={index} 
+                      className={`${
+                        index < 8 ? 'w-[70px] max-w-[70px]' : 
+                        index === 8 ? 'w-[140px] max-w-[140px]' : 
+                        'w-[90px] max-w-[90px]'
+                      } truncate sticky top-0 bg-stone-500 font-bold text-white`}
+                    >
+                      {header}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredElders.map((row, index) => (
+                  <TableRow key={index} className="hover:bg-stone-300/50 border-b border-stone-600">
+                    {row.map((cell, cellIndex) => (
+                      <TableCell 
+                        key={cellIndex} 
+                        className={`${
+                          cellIndex < 8 ? 'w-[70px] max-w-[70px]' : 
+                          cellIndex === 8 ? 'w-[140px] max-w-[140px]' : 
+                          'w-[90px] max-w-[90px]'
+                        } truncate`}
+                      >
+                        {cell}
+                      </TableCell>
                     ))}
-                  </TableBody>
-                </Table>
-              </div>
-            </TabsContent>
-          </Tabs>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
     </div>

@@ -267,7 +267,7 @@ export default function NewRecordPage() {
 
   return (
     <div className="p-6 space-y-6 ml-48 min-h-screen bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/background.jpg)' }}>
-      <Card className="bg-white/180 backdrop-blur-sm">
+      <Card className="bg-white/180 backdrop-blur-[2px]">
         <CardHeader>
           <CardTitle>新增活動紀錄</CardTitle>
           <CardDescription>記錄活動的詳細資訊</CardDescription>
@@ -284,7 +284,7 @@ export default function NewRecordPage() {
             </div>
           </div>
 
-          <Card>
+          <Card className="bg-white/180 backdrop-blur-[2px]">
             <CardHeader>
               <CardTitle>活動紀錄</CardTitle>
               <CardDescription>填寫活動相關資訊</CardDescription>

@@ -179,7 +179,7 @@ export default function NewStoryPage() {
 
   return (
     <div className="p-6 space-y-6 ml-48 min-h-screen bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/background.jpg)' }}>
-      <Card className="bg-white/180 backdrop-blur-sm">
+      <Card className="bg-white/180 backdrop-blur-[2px]">
         <CardHeader>
           <CardTitle>新增故事書</CardTitle>
           <CardDescription>建立一本新的故事書</CardDescription>

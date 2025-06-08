@@ -202,7 +202,7 @@ export default function ActivityDesignPage() {
 
   return (
     <div className="p-6 space-y-6 ml-48 min-h-screen bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/background.jpg)' }}>
-      <Card className="bg-white/180 backdrop-blur-sm">
+      <Card className="bg-white/180 backdrop-blur-[2px]">
         <CardHeader>
           <CardTitle>活動設計</CardTitle>
           <CardDescription>設計適合長輩的活動</CardDescription>
@@ -212,7 +212,7 @@ export default function ActivityDesignPage() {
             <h1 className="text-3xl font-bold">設計活動</h1>
           </div>
 
-          <Card className="bg-white/180 backdrop-blur-sm">
+          <Card className="bg-white/180 backdrop-blur-[2px]">
             <CardHeader>
               <CardTitle>AI 輔助活動設計</CardTitle>
               <CardDescription>提供活動需求，AI 將協助生成適合的活動設計</CardDescription>

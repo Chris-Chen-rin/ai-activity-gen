@@ -95,7 +95,7 @@ export default function ActivityHistoryPage() {
   }
 
   return (
-    <div className="p-6 space-y-6 ml-48">
+    <div className="p-6 space-y-6 ml-48 min-h-screen bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/background.jpg)' }}>
       <div className="flex items-center space-x-2">
         <Button variant="outline" size="icon" asChild>
           <Link href="/record">
@@ -113,7 +113,7 @@ export default function ActivityHistoryPage() {
         <Button variant="outline">篩選</Button>
       </div>
 
-      <Card>
+      <Card className="bg-white/180 backdrop-blur-[2px]">
         <CardHeader>
           <CardTitle>活動紀錄列表</CardTitle>
           <CardDescription>所有已記錄的活動</CardDescription>

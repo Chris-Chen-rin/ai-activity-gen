@@ -89,14 +89,14 @@ export default function HomePage() {
 
   return (
     <div className="p-6 space-y-6 ml-48 min-h-screen bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/background.jpg)' }}>
-      <Card className="bg-white/180 backdrop-blur-sm">
+      <Card className="bg-white/10 backdrop-blur-[2px]">
         <CardHeader>
           <CardTitle>歡迎使用 AI 活動生成系統</CardTitle>
           <CardDescription>為長輩設計適合的活動</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card className="bg-white/180 backdrop-blur-sm">
+          <Card className="bg-white/0 backdrop-blur-[2px]">
               <CardHeader>
                 <CardTitle>本月活動場次</CardTitle>
                 <CardDescription>本月的活動舉辦次數</CardDescription>
@@ -107,7 +107,7 @@ export default function HomePage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-white/180 backdrop-blur-sm">
+            <Card className="bg-white/0 backdrop-blur-[2px]">
               <CardHeader>
                 <CardTitle>本月參與人次</CardTitle>
                 <CardDescription>本月的活動參與總人數</CardDescription>
@@ -119,7 +119,7 @@ export default function HomePage() {
             </Card>
           </div>
 
-          <Card className="bg-white/180 backdrop-blur-sm">
+          <Card className="bg-white/0 backdrop-blur-[2px]">
             <CardHeader>
               <div className="flex justify-between items-center">
                 <div>

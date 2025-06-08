@@ -39,7 +39,7 @@ export default function ActivityDetailPage() {
   const fetchActivity = async () => {
     try {
       setLoading(true)
-      console.log('正在獲取活動資料，ID:', params.id)
+      // console.log('正在獲取活動資料，ID:', params.id)
       
       const response = await fetch('/api/activities')
       
@@ -48,16 +48,16 @@ export default function ActivityDetailPage() {
       }
 
       const data = await response.json()
-      console.log('獲取到的所有活動資料:', data)
-      console.log('正在尋找 ID 為', params.id, '的活動')
+      // console.log('獲取到的所有活動資料:', data)
+      // console.log('正在尋找 ID 為', params.id, '的活動')
       
       // 檢查每個活動的 ID
       data.forEach((a: Activity, index: number) => {
-        console.log(`活動 ${index} 的 ID:`, a.ID, '型別:', typeof a.ID)
+        // console.log(`活動 ${index} 的 ID:`, a.ID, '型別:', typeof a.ID)
       })
 
       const foundActivity = data.find((a: Activity) => {
-        console.log('比對 ID:', a.ID, '與', params.id)
+        // console.log('比對 ID:', a.ID, '與', params.id)
         return String(a.ID) === String(params.id)
       })
       
@@ -66,7 +66,7 @@ export default function ActivityDetailPage() {
         throw new Error('找不到指定的活動')
       }
 
-      console.log('找到活動:', foundActivity)
+      // console.log('找到活動:', foundActivity)
       setActivity(foundActivity)
     } catch (error) {
       console.error('獲取活動資料時發生錯誤:', error)
@@ -78,7 +78,7 @@ export default function ActivityDetailPage() {
 
   if (loading) {
     return (
-      <div className="p-6 space-y-6 ml-48">
+      <div className="p-6 space-y-6 ml-48 min-h-screen bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/background.jpg)' }}>
         <div className="flex justify-center items-center py-8">
           <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
         </div>
@@ -88,8 +88,8 @@ export default function ActivityDetailPage() {
 
   if (!activity) {
     return (
-      <div className="p-6 space-y-6 ml-48">
-        <Card>
+      <div className="p-6 space-y-6 ml-48 min-h-screen bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/background.jpg)' }}>
+        <Card className="bg-white/130 backdrop-blur-[2px]">
           <CardHeader>
             <CardTitle>找不到活動</CardTitle>
             <CardDescription>無法找到指定的活動資料</CardDescription>
@@ -105,8 +105,8 @@ export default function ActivityDetailPage() {
   }
 
   return (
-    <div className="p-6 space-y-6 ml-48">
-      <Card>
+    <div className="p-6 space-y-6 ml-48 min-h-screen bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/background.jpg)' }}>
+      <Card className="bg-white/130 backdrop-blur-[2px]">
         <CardHeader>
           <div className="flex justify-between items-center">
             <div>
