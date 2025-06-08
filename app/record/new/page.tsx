@@ -266,304 +266,312 @@ export default function NewRecordPage() {
   }
 
   return (
-    <div className="p-6 space-y-6 ml-48">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Link href="/record">
-            <Button variant="ghost" size="icon">
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-          </Link>
-          <h1 className="text-3xl font-bold">新增活動紀錄</h1>
-        </div>
-      </div>
-
-      <Card>
+    <div className="p-6 space-y-6 ml-48 min-h-screen bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/background.jpg)' }}>
+      <Card className="bg-white/180 backdrop-blur-sm">
         <CardHeader>
-          <CardTitle>活動紀錄</CardTitle>
-          <CardDescription>填寫活動相關資訊</CardDescription>
+          <CardTitle>新增活動紀錄</CardTitle>
+          <CardDescription>記錄活動的詳細資訊</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          {/* 基本資訊 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>活動類別</Label>
-              <Select
-                value={formData.category}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="選擇活動類別" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="static">靜態活動</SelectItem>
-                  <SelectItem value="dynamic">動態活動</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label>活動類型</Label>
-              <Select
-                value={formData.type}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, type: value }))}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="選擇活動類型" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="individual">個人活動</SelectItem>
-                  <SelectItem value="group">團體活動</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          {/* 主題和名稱 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>活動主題</Label>
-              <Input
-                value={formData.theme}
-                onChange={(e) => setFormData(prev => ({ ...prev, theme: e.target.value }))}
-                placeholder="請輸入活動主題"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>活動名稱</Label>
-              <Input
-                value={formData.name}
-                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                placeholder="請輸入活動名稱"
-              />
-            </div>
-          </div>
-
-          {/* 時間和地點 */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <Label>活動日期</Label>
-              <DatePicker date={date} setDate={setDate} />
-            </div>
-            <div className="space-y-2">
-              <Label>開始時間</Label>
-              <Input
-                type="time"
-                value={formData.timeRange.start}
-                onChange={(e) => handleTimeChange('start', e.target.value)}
-                className="w-full"
-                step="60"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>結束時間</Label>
-              <Input
-                type="time"
-                value={formData.timeRange.end}
-                onChange={(e) => handleTimeChange('end', e.target.value)}
-                className="w-full"
-                step="60"
-              />
-            </div>
-          </div>
-
-          {/* 地點和人員 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>活動地點</Label>
-              <Input
-                value={formData.location}
-                onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
-                placeholder="請輸入活動地點"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>帶領者</Label>
-              <Input
-                value={formData.leader}
-                onChange={(e) => setFormData(prev => ({ ...prev, leader: e.target.value }))}
-                placeholder="請輸入帶領者姓名"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>協助者</Label>
-              <Input
-                value={formData.assistant}
-                onChange={(e) => setFormData(prev => ({ ...prev, assistant: e.target.value }))}
-                placeholder="請輸入協助者姓名"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>參與者程度</Label>
-              <Input
-                value={formData.participantLevel}
-                onChange={(e) => setFormData(prev => ({ ...prev, participantLevel: e.target.value }))}
-                placeholder="請輸入參與者程度"
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label>參與人數</Label>
-            <Input
-              type="number"
-              value={formData.participantCount}
-              onChange={(e) => setFormData(prev => ({ ...prev, participantCount: e.target.value }))}
-              placeholder="請輸入參與人數"
-            />
-          </div>
-
-          {/* 活動目的 */}
-          <div className="space-y-2">
-            <Label>活動目的</Label>
-            <Textarea
-              value={formData.purpose}
-              onChange={(e) => setFormData(prev => ({ ...prev, purpose: e.target.value }))}
-              placeholder="請描述活動目的"
-              rows={3}
-            />
-          </div>
-
-          {/* 活動器材 */}
-          <div className="space-y-2">
-            <Label>活動器材</Label>
-            <Textarea
-              value={formData.equipment}
-              onChange={(e) => setFormData(prev => ({ ...prev, equipment: e.target.value }))}
-              placeholder="請輸入活動器材，用逗號分隔多個器材"
-              rows={2}
-            />
-          </div>
-
-          {/* 活動內容 */}
-          <div className="space-y-2">
-            <Label>活動內容</Label>
-            <Textarea
-              value={formData.content}
-              onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
-              placeholder="請描述活動內容"
-              rows={4}
-            />
-          </div>
-
-          {/* 注意事項 */}
-          <div className="space-y-2">
-            <Label>注意事項</Label>
-            <Textarea
-              value={formData.notes}
-              onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
-              placeholder="請輸入注意事項"
-              rows={3}
-            />
-          </div>
-
-          {/* 參與人員 */}
-          <div className="space-y-2">
-            <Label>參與人員</Label>
-            <Popover open={open} onOpenChange={setOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  role="combobox"
-                  aria-expanded={open}
-                  className="w-full justify-between"
-                >
-                  {formData.participants.length > 0
-                    ? `${formData.participants.length} 位長輩已選擇`
-                    : "選擇參與長輩..."}
-                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        <CardContent>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Link href="/record">
+                <Button variant="ghost" size="icon">
+                  <ChevronLeft className="h-4 w-4" />
                 </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-full p-0">
-                <Command>
-                  <CommandInput placeholder="搜尋長輩名字..." />
-                  <CommandEmpty>找不到符合的長輩</CommandEmpty>
-                  <CommandGroup className="max-h-[300px] overflow-auto">
-                    {elders.map((elder) => (
-                      <CommandItem
-                        key={elder.id}
-                        onSelect={() => {
-                          const newParticipants = formData.participants.includes(elder.name)
-                            ? formData.participants.filter(name => name !== elder.name)
-                            : [...formData.participants, elder.name]
-                          setFormData(prev => ({
-                            ...prev,
-                            participants: newParticipants
-                          }))
-                        }}
-                        className={cn(
-                          "flex items-center",
-                          elder.adlScore !== undefined && {
-                            "bg-red-100/50 hover:bg-red-100": elder.adlScore <= 30,
-                            "bg-orange-100/50 hover:bg-orange-100": elder.adlScore > 30 && elder.adlScore <= 60,
-                            "bg-green-100/50 hover:bg-green-100": elder.adlScore >= 65,
-                          }
-                        )}
-                      >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            formData.participants.includes(elder.name) ? "opacity-100" : "opacity-0"
-                          )}
-                        />
-                        <div className="flex flex-col">
-                          <span>{elder.name}</span>
-                          {elder.adlScore !== undefined && (
-                            <span className="text-xs text-muted-foreground">
-                              ADL: {elder.adlScore <= 30 ? "極重度依賴" : elder.adlScore <= 60 ? "重度依賴" : "中度依賴"}
-                            </span>
-                          )}
-                        </div>
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </Command>
-              </PopoverContent>
-            </Popover>
-            {formData.participants.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-2">
-                {formData.participants.map((name) => (
-                  <Badge
-                    key={name}
-                    variant="secondary"
-                    className="flex items-center gap-1"
-                  >
-                    {name}
-                    <button
-                      className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                      onClick={() => {
-                        setFormData(prev => ({
-                          ...prev,
-                          participants: prev.participants.filter(n => n !== name)
-                        }))
-                      }}
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  </Badge>
-                ))}
-              </div>
-            )}
+              </Link>
+              <h1 className="text-3xl font-bold">新增活動紀錄</h1>
+            </div>
           </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>活動紀錄</CardTitle>
+              <CardDescription>填寫活動相關資訊</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* 基本資訊 */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>活動類別</Label>
+                  <Select
+                    value={formData.category}
+                    onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="選擇活動類別" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="static">靜態活動</SelectItem>
+                      <SelectItem value="dynamic">動態活動</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>活動類型</Label>
+                  <Select
+                    value={formData.type}
+                    onValueChange={(value) => setFormData(prev => ({ ...prev, type: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="選擇活動類型" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="individual">個人活動</SelectItem>
+                      <SelectItem value="group">團體活動</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* 主題和名稱 */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>活動主題</Label>
+                  <Input
+                    value={formData.theme}
+                    onChange={(e) => setFormData(prev => ({ ...prev, theme: e.target.value }))}
+                    placeholder="請輸入活動主題"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>活動名稱</Label>
+                  <Input
+                    value={formData.name}
+                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                    placeholder="請輸入活動名稱"
+                  />
+                </div>
+              </div>
+
+              {/* 時間和地點 */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label>活動日期</Label>
+                  <DatePicker date={date} setDate={setDate} />
+                </div>
+                <div className="space-y-2">
+                  <Label>開始時間</Label>
+                  <Input
+                    type="time"
+                    value={formData.timeRange.start}
+                    onChange={(e) => handleTimeChange('start', e.target.value)}
+                    className="w-full"
+                    step="60"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>結束時間</Label>
+                  <Input
+                    type="time"
+                    value={formData.timeRange.end}
+                    onChange={(e) => handleTimeChange('end', e.target.value)}
+                    className="w-full"
+                    step="60"
+                  />
+                </div>
+              </div>
+
+              {/* 地點和人員 */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>活動地點</Label>
+                  <Input
+                    value={formData.location}
+                    onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
+                    placeholder="請輸入活動地點"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>帶領者</Label>
+                  <Input
+                    value={formData.leader}
+                    onChange={(e) => setFormData(prev => ({ ...prev, leader: e.target.value }))}
+                    placeholder="請輸入帶領者姓名"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>協助者</Label>
+                  <Input
+                    value={formData.assistant}
+                    onChange={(e) => setFormData(prev => ({ ...prev, assistant: e.target.value }))}
+                    placeholder="請輸入協助者姓名"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>參與者程度</Label>
+                  <Input
+                    value={formData.participantLevel}
+                    onChange={(e) => setFormData(prev => ({ ...prev, participantLevel: e.target.value }))}
+                    placeholder="請輸入參與者程度"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label>參與人數</Label>
+                <Input
+                  type="number"
+                  value={formData.participantCount}
+                  onChange={(e) => setFormData(prev => ({ ...prev, participantCount: e.target.value }))}
+                  placeholder="請輸入參與人數"
+                />
+              </div>
+
+              {/* 活動目的 */}
+              <div className="space-y-2">
+                <Label>活動目的</Label>
+                <Textarea
+                  value={formData.purpose}
+                  onChange={(e) => setFormData(prev => ({ ...prev, purpose: e.target.value }))}
+                  placeholder="請描述活動目的"
+                  rows={3}
+                />
+              </div>
+
+              {/* 活動器材 */}
+              <div className="space-y-2">
+                <Label>活動器材</Label>
+                <Textarea
+                  value={formData.equipment}
+                  onChange={(e) => setFormData(prev => ({ ...prev, equipment: e.target.value }))}
+                  placeholder="請輸入活動器材，用逗號分隔多個器材"
+                  rows={2}
+                />
+              </div>
+
+              {/* 活動內容 */}
+              <div className="space-y-2">
+                <Label>活動內容</Label>
+                <Textarea
+                  value={formData.content}
+                  onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
+                  placeholder="請描述活動內容"
+                  rows={4}
+                />
+              </div>
+
+              {/* 注意事項 */}
+              <div className="space-y-2">
+                <Label>注意事項</Label>
+                <Textarea
+                  value={formData.notes}
+                  onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
+                  placeholder="請輸入注意事項"
+                  rows={3}
+                />
+              </div>
+
+              {/* 參與人員 */}
+              <div className="space-y-2">
+                <Label>參與人員</Label>
+                <Popover open={open} onOpenChange={setOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={open}
+                      className="w-full justify-between"
+                    >
+                      {formData.participants.length > 0
+                        ? `${formData.participants.length} 位長輩已選擇`
+                        : "選擇參與長輩..."}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-full p-0">
+                    <Command>
+                      <CommandInput placeholder="搜尋長輩名字..." />
+                      <CommandEmpty>找不到符合的長輩</CommandEmpty>
+                      <CommandGroup className="max-h-[300px] overflow-auto">
+                        {elders.map((elder) => (
+                          <CommandItem
+                            key={elder.id}
+                            onSelect={() => {
+                              const newParticipants = formData.participants.includes(elder.name)
+                                ? formData.participants.filter(name => name !== elder.name)
+                                : [...formData.participants, elder.name]
+                              setFormData(prev => ({
+                                ...prev,
+                                participants: newParticipants
+                              }))
+                            }}
+                            className={cn(
+                              "flex items-center",
+                              elder.adlScore !== undefined && {
+                                "bg-red-100/50 hover:bg-red-100": elder.adlScore <= 30,
+                                "bg-orange-100/50 hover:bg-orange-100": elder.adlScore > 30 && elder.adlScore <= 60,
+                                "bg-green-100/50 hover:bg-green-100": elder.adlScore >= 65,
+                              }
+                            )}
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                formData.participants.includes(elder.name) ? "opacity-100" : "opacity-0"
+                              )}
+                            />
+                            <div className="flex flex-col">
+                              <span>{elder.name}</span>
+                              {elder.adlScore !== undefined && (
+                                <span className="text-xs text-muted-foreground">
+                                  ADL: {elder.adlScore <= 30 ? "極重度依賴" : elder.adlScore <= 60 ? "重度依賴" : "中度依賴"}
+                                </span>
+                              )}
+                            </div>
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+                {formData.participants.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {formData.participants.map((name) => (
+                      <Badge
+                        key={name}
+                        variant="secondary"
+                        className="flex items-center gap-1"
+                      >
+                        {name}
+                        <button
+                          className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                          onClick={() => {
+                            setFormData(prev => ({
+                              ...prev,
+                              participants: prev.participants.filter(n => n !== name)
+                            }))
+                          }}
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button 
+                className="w-full" 
+                onClick={handleSave}
+                disabled={saving}
+              >
+                {saving ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    儲存中...
+                  </>
+                ) : (
+                  '儲存紀錄'
+                )}
+              </Button>
+            </CardFooter>
+          </Card>
         </CardContent>
-        <CardFooter>
-          <Button 
-            className="w-full" 
-            onClick={handleSave}
-            disabled={saving}
-          >
-            {saving ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                儲存中...
-              </>
-            ) : (
-              '儲存紀錄'
-            )}
-          </Button>
-        </CardFooter>
       </Card>
     </div>
   )

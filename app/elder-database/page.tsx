@@ -51,7 +51,7 @@ export default function ElderDatabasePage() {
       }
       setHeaders(columnHeaders)
 
-      console.log("response.elders structure:", JSON.stringify(response.elders, null, 2))
+      // console.log("response.elders structure:", JSON.stringify(response.elders, null, 2))
       const formattedElders = response.elders.map((row: any) => 
         columnHeaders.map(header => row[header] || '')
       )
@@ -110,10 +110,11 @@ export default function ElderDatabasePage() {
   }
 
   return (
-    <div className="container mx-auto py-8 ml-48">
-      <Card>
+    <div className="p-6 space-y-6 ml-48 min-h-screen bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/background.jpg)' }}>
+      <Card className="bg-white/130 backdrop-blur-sm">
         <CardHeader>
           <CardTitle>長者資料庫</CardTitle>
+          <CardDescription>管理長者基本資料</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center space-x-4 mb-6">
@@ -137,10 +138,10 @@ export default function ElderDatabasePage() {
               <TabsTrigger value="table">表格檢視</TabsTrigger>
             </TabsList>
             <TabsContent value="table">
-              <div className="rounded-md border overflow-x-auto" style={{ maxHeight: 'calc(100vh - 300px)' }}>
+              <div className="rounded-md border border-stone-600 overflow-x-auto" style={{ maxHeight: 'calc(100vh - 300px)' }}>
                 <Table>
                   <TableHeader>
-                    <TableRow>
+                    <TableRow className="bg-stone-400">
                       {headers.map((header, index) => (
                         <TableHead 
                           key={index} 
@@ -148,7 +149,7 @@ export default function ElderDatabasePage() {
                             index < 8 ? 'w-[70px] max-w-[70px]' : 
                             index === 8 ? 'w-[140px] max-w-[140px]' : 
                             'w-[90px] max-w-[90px]'
-                          } truncate sticky top-0 bg-white`}
+                          } truncate sticky top-0 bg-stone-100 font-bold`}
                         >
                           {header}
                         </TableHead>
@@ -157,7 +158,7 @@ export default function ElderDatabasePage() {
                   </TableHeader>
                   <TableBody>
                     {filteredElders.map((row, index) => (
-                      <TableRow key={index}>
+                      <TableRow key={index} className="hover:bg-stone-300/50 border-b border-stone-600">
                         {row.map((cell, cellIndex) => (
                           <TableCell 
                             key={cellIndex} 

@@ -66,53 +66,61 @@ export default function LifeStoryPage() {
   }
 
   return (
-    <div className="p-6 space-y-6 ml-48">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">故事書列表</h1>
-        <Button onClick={() => router.push("/life-story/new")}>
-          <Plus className="mr-2 h-4 w-4" />
-          新增故事書
-        </Button>
-      </div>
+    <div className="p-6 space-y-6 ml-48 min-h-screen bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/background.jpg)' }}>
+      <Card className="bg-white/180 backdrop-blur-sm">
+        <CardHeader>
+          <CardTitle>生命故事書</CardTitle>
+          <CardDescription>記錄長輩的生命故事</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex justify-between items-center">
+            <h1 className="text-3xl font-bold">故事書列表</h1>
+            <Button onClick={() => router.push("/life-story/new")}>
+              <Plus className="mr-2 h-4 w-4" />
+              新增故事書
+            </Button>
+          </div>
 
-      {loading ? (
-        <div className="flex justify-center items-center h-64">
-          <Loader2 className="h-8 w-8 animate-spin" />
-        </div>
-      ) : stories.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center h-64">
-            <p className="text-muted-foreground">還沒有故事書，點擊上方按鈕新增</p>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {stories.map((story) => (
-            <Card key={story.ID} className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <CardTitle>{story.人物名稱}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="aspect-video relative mb-4 bg-muted rounded-lg overflow-hidden">
-                  {!imageErrors[story.ID] ? (
-                    <img
-                      src={story.圖片URL}
-                      alt={story.圖片描述}
-                      className="object-cover w-full h-full"
-                      onError={() => handleImageError(story.ID)}
-                    />
-                  ) : (
-                    <div className="flex items-center justify-center h-full">
-                      <ImageIcon className="h-12 w-12 text-muted-foreground" />
-                    </div>
-                  )}
-                </div>
-                <p className="text-sm text-muted-foreground line-clamp-3">{story.圖片描述}</p>
+          {loading ? (
+            <div className="flex justify-center items-center h-64">
+              <Loader2 className="h-8 w-8 animate-spin" />
+            </div>
+          ) : stories.length === 0 ? (
+            <Card className="bg-white/180 backdrop-blur-sm">
+              <CardContent className="flex flex-col items-center justify-center h-64">
+                <p className="text-muted-foreground">還沒有故事書，點擊上方按鈕新增</p>
               </CardContent>
             </Card>
-          ))}
-        </div>
-      )}
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {stories.map((story) => (
+                <Card key={story.ID} className="hover:shadow-lg transition-shadow bg-white/180 backdrop-blur-sm border-4 border-stone-700">
+                  <CardHeader>
+                    <CardTitle>{story.人物名稱}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="aspect-video relative mb-4 bg-muted rounded-lg overflow-hidden">
+                      {!imageErrors[story.ID] ? (
+                        <img
+                          src={story.圖片URL}
+                          alt={story.圖片描述}
+                          className="object-cover w-full h-full"
+                          onError={() => handleImageError(story.ID)}
+                        />
+                      ) : (
+                        <div className="flex items-center justify-center h-full">
+                          <ImageIcon className="h-12 w-12 text-muted-foreground" />
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-base text-muted-foreground line-clamp-3">{story.圖片描述}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   )
 }

@@ -91,7 +91,7 @@ export function SidebarMenuButton({
 }) {
   const baseClass = "flex items-center px-4 py-2 text-sm font-medium rounded transition-colors"
 
-  const activeClass = "bg-[#75dfd3] text-white"
+  const activeClass = "bg-black/35 text-white"
   const inactiveClass = "text-gray-300 hover:bg-[#c2e8f8]"
 
   const finalClass = clsx(baseClass, isActive ? activeClass : inactiveClass, className)

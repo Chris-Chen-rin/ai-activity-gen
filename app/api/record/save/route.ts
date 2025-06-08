@@ -9,7 +9,7 @@ interface Participant {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    console.log('API 收到請求:', body)
+    // console.log('API 收到請求:', body)
     
     // 轉換資料格式以匹配 Google Sheet 表頭
     const sheetData = {
@@ -31,7 +31,7 @@ export async function POST(request: Request) {
       '參與成員': Array.isArray(body.participants) ? body.participants.map((p: Participant) => p.name).join(', ') : '',
     }
 
-    console.log('轉換後的資料:', sheetData)
+    // console.log('轉換後的資料:', sheetData)
     
     // 發送請求到 Google Apps Script
     const response = await fetch(
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
       }
     )
 
-    console.log('Google Apps Script 回應狀態:', response.status, response.statusText)
+    // console.log('Google Apps Script 回應狀態:', response.status, response.statusText)
 
     // 檢查 HTTP 狀態碼
     if (!response.ok) {
@@ -62,7 +62,7 @@ export async function POST(request: Request) {
     let result
     try {
       const responseText = await response.text()
-      console.log('原始回應內容:', responseText)
+      // console.log('原始回應內容:', responseText)
       
       if (!responseText) {
         throw new Error('回應內容為空')
@@ -75,7 +75,7 @@ export async function POST(request: Request) {
         throw new Error('回應格式不正確')
       }
 
-      console.log('解析後的回應:', result)
+      // console.log('解析後的回應:', result)
     } catch (e) {
       console.error('無法解析 Google Apps Script 回應:', e)
       throw new Error('無法解析 Google Apps Script 回應: ' + (e instanceof Error ? e.message : String(e)))

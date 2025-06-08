@@ -17,7 +17,7 @@ export async function GET() {
     }
 
     const responseText = await response.text()
-    console.log('GAS 回應內容:', responseText)
+    // console.log('GAS 回應內容:', responseText)
 
     try {
       const jsonResponse = JSON.parse(responseText)
@@ -50,7 +50,7 @@ export async function POST(request: Request) {
       圖片描述: data.圖片描述
     }
 
-    console.log('發送到 GAS 的資料:', formattedData)
+    // console.log('發送到 GAS 的資料:', formattedData)
 
     const response = await fetch(GAS_URL, {
       method: 'POST',
@@ -66,7 +66,7 @@ export async function POST(request: Request) {
 
     // 獲取回應內容
     const responseText = await response.text()
-    console.log('GAS 回應內容:', responseText)
+    // console.log('GAS 回應內容:', responseText)
 
     // 嘗試解析 JSON
     try {
