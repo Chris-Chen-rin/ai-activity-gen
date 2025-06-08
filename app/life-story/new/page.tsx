@@ -25,7 +25,7 @@ interface Elder {
 }
 
 interface FormData {
-  長輩名稱: string[]
+  長輩名稱: string
   圖片URL: string
   圖片描述: string
 }
@@ -37,7 +37,7 @@ export default function NewStoryPage() {
   const [open, setOpen] = useState(false)
   const [elders, setElders] = useState<Elder[]>([])
   const [formData, setFormData] = useState<FormData>({
-    長輩名稱: [],
+    長輩名稱: "",
     圖片URL: "",
     圖片描述: ""
   })
@@ -178,7 +178,7 @@ export default function NewStoryPage() {
   }
 
   return (
-    <div className="p-6 space-y-6 ml-48 min-h-screen bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/background.jpg)' }}>
+    <div className="p-4 pb-16 space-y-8 ml-48 min-h-screen bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/background.jpg)' }}>
       <Card className="bg-white/180 backdrop-blur-[2px]">
         <CardHeader>
           <CardTitle>新增故事書</CardTitle>
@@ -196,9 +196,11 @@ export default function NewStoryPage() {
                     aria-expanded={open}
                     className="w-full justify-between"
                   >
-                    {formData.長輩名稱.length > 0
-                      ? `${formData.長輩名稱.length} 位長輩已選擇`
-                      : "選擇參與長輩..."}
+                    {formData.長輩名稱 ? (
+                      formData.長輩名稱
+                    ) : (
+                      "選擇參與長輩..."
+                    )}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
                 </PopoverTrigger>
@@ -211,13 +213,11 @@ export default function NewStoryPage() {
                         <CommandItem
                           key={elder.id}
                           onSelect={() => {
-                            const newParticipants = formData.長輩名稱.includes(elder.name)
-                              ? formData.長輩名稱.filter(name => name !== elder.name)
-                              : [...formData.長輩名稱, elder.name]
                             setFormData(prev => ({
                               ...prev,
-                              長輩名稱: newParticipants
+                              長輩名稱: elder.name
                             }))
+                            setOpen(false)
                           }}
                           className={cn(
                             "flex items-center",
@@ -231,7 +231,7 @@ export default function NewStoryPage() {
                           <Check
                             className={cn(
                               "mr-2 h-4 w-4",
-                              formData.長輩名稱.includes(elder.name) ? "opacity-100" : "opacity-0"
+                              formData.長輩名稱 === elder.name ? "opacity-100" : "opacity-0"
                             )}
                           />
                           <div className="flex flex-col">
@@ -248,28 +248,25 @@ export default function NewStoryPage() {
                   </Command>
                 </PopoverContent>
               </Popover>
-              {formData.長輩名稱.length > 0 && (
+              {formData.長輩名稱 && (
                 <div className="flex flex-wrap gap-2 mt-2">
-                  {formData.長輩名稱.map((name) => (
-                    <Badge
-                      key={name}
-                      variant="secondary"
-                      className="flex items-center gap-1"
+                  <Badge
+                    variant="secondary"
+                    className="flex items-center gap-1"
+                  >
+                    {formData.長輩名稱}
+                    <button
+                      className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                      onClick={() => {
+                        setFormData(prev => ({
+                          ...prev,
+                          長輩名稱: ""
+                        }))
+                      }}
                     >
-                      {name}
-                      <button
-                        className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                        onClick={() => {
-                          setFormData(prev => ({
-                            ...prev,
-                            長輩名稱: prev.長輩名稱.filter(n => n !== name)
-                          }))
-                        }}
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </Badge>
-                  ))}
+                      <X className="h-3 w-3" />
+                    </button>
+                  </Badge>
                 </div>
               )}
             </div>

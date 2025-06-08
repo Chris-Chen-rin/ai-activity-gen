@@ -66,14 +66,14 @@ export default function LifeStoryPage() {
   }
 
   return (
-    <div className="p-6 space-y-6 ml-48 min-h-screen bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/background.jpg)' }}>
+    <div className="p-6 pb-24 space-y-6 ml-48 min-h-screen bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/background.jpg)' }}>
       <Card className="bg-white/180 backdrop-blur-[2px]">
         <CardHeader>
           <CardTitle>生命故事書</CardTitle>
           <CardDescription>記錄長輩的生命故事</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center mb-8">
             <h1 className="text-3xl font-bold">故事書列表</h1>
             <Button onClick={() => router.push("/life-story/new")}>
               <Plus className="mr-2 h-4 w-4" />
