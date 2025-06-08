@@ -16,13 +16,19 @@ interface GenerateActivityRequest {
 
 // 定義回應類型
 interface ActivityResponse {
-  name: string
-  description: string
-  participants: string[]
-  objectives: string[]
-  materials: string[]
-  procedure: string[]
-  adaptations: string[]
+  category: string // 活動類別（靜態/動態）
+  type: string // 個人/團體活動
+  theme: string // 活動主題
+  name: string // 活動名稱
+  timeRange: string // 活動時間範圍
+  location: string // 活動地點
+  participantLevel: string // 參與者程度
+  participantCount: number // 參與人數
+  objectives: string[] // 活動目的
+  materials: string[] // 活動器材
+  content: string[] // 活動內容
+  precautions: string[] // 注意事項
+  participants: string[] // 參與成員
 }
 
 export async function POST(request: Request) {
@@ -48,13 +54,19 @@ export async function POST(request: Request) {
 
 請提供以下格式的回應（請確保回應是 JSON 格式）：
 {
+  "category": "活動類別（靜態/動態）",
+  "type": "個人/團體活動",
+  "theme": "活動主題",
   "name": "活動名稱",
-  "description": "活動描述",
-  "participants": ["參與者1", "參與者2", ...],
-  "objectives": ["目標1", "目標2", ...],
-  "materials": ["材料1", "材料2", ...],
-  "procedure": ["步驟1", "步驟2", ...],
-  "adaptations": ["調整建議1", "調整建議2", ...]
+  "timeRange": "活動時間範圍",
+  "location": "活動地點",
+  "participantLevel": "參與者程度",
+  "participantCount": 參與人數,
+  "objectives": ["活動目的1", "活動目的2", ...],
+  "materials": ["活動器材1", "活動器材2", ...],
+  "content": ["活動內容1", "活動內容2", ...],
+  "precautions": ["注意事項1", "注意事項2", ...],
+  "participants": ["參與成員1", "參與成員2", ...]
 }`
 
     // 調用 OpenAI API
