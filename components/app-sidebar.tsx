@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { BookOpen, ClipboardList, Database, Home, PenSquare } from "lucide-react"
+import { BookOpen, ClipboardList, Database, Home, Info, PenSquare } from "lucide-react"
 
 import {
   Sidebar,
@@ -92,6 +92,18 @@ export function AppSidebar() {
                   <Link href="/activity-design" className="flex items-center gap-2 w-full">
                     <PenSquare className="w-5 h-5" />
                     <span>設計活動</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={isActive("/introduce")}
+                  className="hover:bg-white/20 data-[active=true]:bg-white/30 w-full"
+                >
+                  <Link href="/introduce" className="flex items-center gap-2 w-full">
+                    <Info className="w-5 h-5" />
+                    <span>專案介紹</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
